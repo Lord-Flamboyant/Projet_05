@@ -20,6 +20,8 @@
         android:id="@+id/list_tasks"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:clipToPadding="false"
         android:paddingBottom="88dp"
         tools:itemCount="5"
