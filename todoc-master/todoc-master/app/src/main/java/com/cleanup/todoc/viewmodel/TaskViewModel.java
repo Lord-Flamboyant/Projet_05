@@ -1,40 +1,64 @@
 package com.cleanup.todoc.viewmodel;
 
-import android.app.Application;
-
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
 
+import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
+import com.cleanup.todoc.repository.ProjectRepository;
 import com.cleanup.todoc.repository.TaskRepository;
 
 import java.util.List;
+import java.util.concurrent.Executor;
 
-public class TaskViewModel extends AndroidViewModel {
+public class TaskViewModel extends ViewModel {
 
-    private TaskRepository mRepository;
-    private final LiveData<List<Task>> mAllTask;
+    //----- Repositories -----//
+    private final TaskRepository taskRepository;
+    private final ProjectRepository projectRepository;
+    private final Executor executor;
 
-    public TaskViewModel (Application application) {
-        super(application);
-        mRepository = new TaskRepository(application);
-        mAllTask = mRepository.getAllTask();
+    //----- Data -----//
+    private LiveData<Project> currentProject;
+
+    public TaskViewModel(TaskRepository taskRepository, ProjectRepository projectRepository, Executor executor) {
+        this.taskRepository = taskRepository;
+        this.projectRepository = projectRepository;
+        this.executor = executor;
     }
 
-    public LiveData<List<Task>> getAllTask() {
-        return mAllTask;
+    public void init(long id) {
+        if (this.currentProject != null) {
+            return;
+        }
+        currentProject = projectRepository.getProject(id);
     }
 
-    public void insert(Task task) {
-        mRepository.insert(task);
+    //----- For Project -----//
+    public LiveData<Project> getProject(long id) {
+        return this.currentProject;
     }
 
-    public void delete(Task task) {
-        mRepository.delete(task);
+    //----- For Task -----//
+    public LiveData<List<Task>> getTasks(long id) {
+        return taskRepository.getTasks(id);
     }
 
-    public void update(Task task) {
-        mRepository.update(task);
+    public void createTask(Task task) {
+        executor.execute(() -> {
+            taskRepository.createTask(task);
+        });
     }
 
+    public void deleteItem(long id) {
+        executor.execute(() -> {
+            taskRepository.deleteTask(id);
+        });
+    }
+
+    public void updateItem(Task task) {
+        executor.execute(() -> {
+            taskRepository.updateTask(task);
+        });
+    }
 }

@@ -1,6 +1,7 @@
 package com.cleanup.todoc.ui;
 
 import android.content.res.ColorStateList;
+import android.location.GnssAntennaInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,13 +27,12 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
      * The list of tasks the adapter deals with
      */
     @NonNull
-    private List<Task> tasks;
-
-    /**
+    private List<Task> tasks;    /**
      * The listener for when a task needs to be deleted
      */
     @NonNull
     private final DeleteTaskListener deleteTaskListener;
+
 
     /**
      * Instantiates a new TasksAdapter.
