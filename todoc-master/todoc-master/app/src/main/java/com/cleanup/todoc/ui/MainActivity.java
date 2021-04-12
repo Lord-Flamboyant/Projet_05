@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 
 import com.cleanup.todoc.R;
 import com.cleanup.todoc.injection.Injection;
@@ -44,17 +44,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     private TaskViewModel taskViewModel;
 
     //----- test -----//
-    private void addTaskDatabase() {
-        Task task = new Task(2, 1,"test 1", 21);
-        Task task1 = new Task(3, 1,"test 2", 20);
-        Task task2 = new Task(2, 2,"test 3", 23);
-
-        taskViewModel.createTask(task);
-        taskViewModel.createTask(task1);
-        taskViewModel.createTask(task2);
-    }
-
-
 
 
 
@@ -72,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     /**
      * The adapter which handles the list of tasks
      */
-    private final TasksAdapter adapter = new TasksAdapter(tasks, this);
+    private final TasksAdapter adapter = new TasksAdapter(tasks);
 
     /**
      * The sort method to be used to display tasks
@@ -120,18 +109,18 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
         setContentView(R.layout.activity_main);
 
-        configureViewModel();
+
 
         //----- Test Zone -----//
-        //addTaskDatabase();
-
-
+        configureViewModel();
+        getItems();
 
         listTasks = findViewById(R.id.list_tasks);
         lblNoTasks = findViewById(R.id.lbl_no_task);
 
         listTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         listTasks.setAdapter(adapter);
+
 
         findViewById(R.id.fab_add_task).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
     @Override
     public void onDeleteTask(Task task) {
-        tasks.remove(task);
+        taskViewModel.deleteItem(task.projectId);
         updateTasks();
     }
 
@@ -205,8 +194,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                         taskName,
                         new Date().getTime()
                 );
-                this.taskViewModel.createTask(task);
-                //addTask(task);
+                addTask(task);
 
                 dialogInterface.dismiss();
             }
@@ -240,8 +228,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      *
      * @param task the task to be added to the list
      */
-    private void addTask(@NonNull Task task) {
-        tasks.add(task);
+    private void addTask(Task task) {
+        taskViewModel.createTask(task);
         updateTasks();
     }
 
@@ -249,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * Updates the list of tasks in the UI
      */
     private void updateTasks() {
-        if (tasks.size() == 0) {
+        if(tasks.size() == 0 ){
             lblNoTasks.setVisibility(View.VISIBLE);
             listTasks.setVisibility(View.GONE);
         } else {
@@ -361,4 +349,29 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     }
 
 
+    //-----test-----//
+
+    private void getItems(){
+        this.taskViewModel.getTasks().observe(this, this::updateItemsList);
+    }
+
+    private void updateTaskList(List<Task> task) {
+        this.adapter.updateTasks(tasks);
+    }
+    // ---
+
+    private void deleteTask(long id) {
+        taskViewModel.deleteItem(id);
+    }
+
+    private void getTasks(){
+        this.taskViewModel.getTasks().observe(this, this::updateTaskList);
+    }
+
+    private void updateTask(Task task) {
+        taskViewModel.updateItem(task);
+    }
+    private void updateItemsList(List<Task> tasks){
+        this.adapter.updateTasks(tasks);
+    }
 }
