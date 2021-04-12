@@ -19,7 +19,7 @@ public class Injection {
 
     public static ProjectRepository provideProjectRepository(Context context) {
         TaskDatabase database = TaskDatabase.getInstance(context);
-        return new ProjectRepository((ProjectDao) database.projectDao());
+        return new ProjectRepository(database.projectDao());
     }
 
     public static Executor provideExecutor() {
