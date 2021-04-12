@@ -10,6 +10,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import com.cleanup.todoc.database.dao.ProjectDao;
 import com.cleanup.todoc.database.dao.TaskDao;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
@@ -17,14 +18,14 @@ import com.cleanup.todoc.model.Task;
 @Database(entities = {Task.class, Project.class}, version = 1, exportSchema = false)
 public abstract class TaskDatabase extends RoomDatabase {
 
-    // --- SINGLETON ---
+    //----- SINGLETON -----//
     private static volatile TaskDatabase INSTANCE;
 
-    // --- DAO ---
+    //----- DAO -----//
     public abstract TaskDao taskDao();
-    public abstract Project projectDao();
+    public abstract ProjectDao projectDao();
 
-    // --- INSTANCE ---
+    //----- INSTANCE -----//
     public static TaskDatabase getInstance(Context context) {
         if (INSTANCE == null) {
             synchronized (TaskDatabase.class) {
@@ -39,7 +40,7 @@ public abstract class TaskDatabase extends RoomDatabase {
         return INSTANCE;
     }
 
-    // ---
+    //----- call -----//
 
     private static Callback prepopulateDatabase(){
         return new Callback() {
@@ -54,7 +55,7 @@ public abstract class TaskDatabase extends RoomDatabase {
                 contentValues.put("name", "ceci est un test");
                 contentValues.put("creationTimeStamp", 12);
 
-                db.insert("task", OnConflictStrategy.IGNORE, contentValues);
+                db.insert("Task", OnConflictStrategy.IGNORE, contentValues);
             }
         };
     }

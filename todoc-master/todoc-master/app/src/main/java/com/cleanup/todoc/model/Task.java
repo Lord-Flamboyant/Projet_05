@@ -15,9 +15,7 @@ import java.util.Comparator;
  *
  * @author Gaëtan HERFRAY
  */
-@Entity(foreignKeys = @ForeignKey(entity = Project.class,
-        parentColumns = "id",
-        childColumns = "projectId"))
+@Entity
 public class Task {
     /**
      * The unique identifier of the task
@@ -28,6 +26,7 @@ public class Task {
     /**
      * The unique identifier of the project associated to the task
      */
+
     public long projectId;
 
     /**
@@ -41,7 +40,6 @@ public class Task {
     /**
      * The timestamp when the task has been created
      */
-
     public long creationTimestamp;
 
     /**

@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,6 +30,7 @@ import com.cleanup.todoc.viewmodel.TaskViewModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>Home activity of the application which is displayed when the user opens the app.</p>
@@ -40,7 +42,19 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
     //----- For Data -----//
     private TaskViewModel taskViewModel;
-    private static int USER_ID = 1;
+
+    //----- test -----//
+    private void addTaskDatabase() {
+        Task task = new Task(2, 1,"test 1", 21);
+        Task task1 = new Task(3, 1,"test 2", 20);
+        Task task2 = new Task(2, 2,"test 3", 23);
+
+        taskViewModel.createTask(task);
+        taskViewModel.createTask(task1);
+        taskViewModel.createTask(task2);
+    }
+
+
 
 
 
@@ -105,6 +119,13 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        configureViewModel();
+
+        //----- Test Zone -----//
+        //addTaskDatabase();
+
+
 
         listTasks = findViewById(R.id.list_tasks);
         lblNoTasks = findViewById(R.id.lbl_no_task);
@@ -184,8 +205,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                         taskName,
                         new Date().getTime()
                 );
-
-                addTask(task);
+                this.taskViewModel.createTask(task);
+                //addTask(task);
 
                 dialogInterface.dismiss();
             }
@@ -337,9 +358,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     private void configureViewModel(){
         ViewModelFactory mViewModelFactory = Injection.provideViewModelFactory(this);
         this.taskViewModel = new ViewModelProvider(this,mViewModelFactory).get(TaskViewModel.class);
-        this.taskViewModel.init(USER_ID);
     }
-
 
 
 }
