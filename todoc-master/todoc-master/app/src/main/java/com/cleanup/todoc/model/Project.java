@@ -3,7 +3,6 @@ package com.cleanup.todoc.model;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -12,36 +11,35 @@ import androidx.room.PrimaryKey;
  *
  * @author Gaëtan HERFRAY
  */
+
 @Entity
 public class Project {
     /**
      * The unique identifier of the project
      */
     @PrimaryKey
-    public final long id;
+    public long id;
 
     /**
      * The name of the project
      */
-    @NonNull
-    @ColumnInfo(name = "name_prject")
-    public final String name;
+    public String name;
 
     /**
      * The hex (ARGB) code of the color associated to the project
      */
     @ColorInt
-    @ColumnInfo(name = "color")
-    public final int color;
+    public int color;
+
 
     /**
      * Instantiates a new Project.
      *
      * @param id    the unique identifier of the project to set
-     * @param name  the name of the project to set
+     * @param name the name of the project to set
      * @param color the hex (ARGB) code of the color associated to the project to set
      */
-    public Project(long id, @NonNull String name, @ColorInt int color) {
+    public Project(long id, String name, @ColorInt int color) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -52,7 +50,7 @@ public class Project {
      *
      * @return all the projects of the application
      */
-    @NonNull
+
     public static Project[] getAllProjects() {
         return new Project[]{
                 new Project(1L, "Projet Tartampion", 0xFFEADAD1),
@@ -91,7 +89,7 @@ public class Project {
      *
      * @return the name of the project
      */
-    @NonNull
+
     public String getName() {
         return name;
     }
@@ -107,8 +105,22 @@ public class Project {
     }
 
     @Override
-    @NonNull
     public String toString() {
         return getName();
+    }
+
+
+    //----- Setter -----//
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 }
