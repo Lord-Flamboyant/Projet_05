@@ -20,13 +20,14 @@ public class Task {
     /**
      * The unique identifier of the task
      */
+
     @PrimaryKey(autoGenerate = true)
     public long id;
 
     /**
      * The unique identifier of the project associated to the task
      */
-
+    //TODO: implement the @ForeignKey
     public long projectId;
 
     /**

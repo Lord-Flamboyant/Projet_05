@@ -10,11 +10,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Delete;
 
 import com.cleanup.todoc.R;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,7 +35,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
      *
      * @param tasks the list of tasks the adapter deals with to set
      */
-    TasksAdapter(final List<Task> tasks) {
+    TasksAdapter(List<Task> tasks) {
         this.tasks = tasks;
     }
 
@@ -42,7 +44,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
      *
      * @param tasks the list of tasks the adapter deals with to set
      */
-    void updateTasks(@NonNull final List<Task> tasks) {
+    void updateTasks(final List<Task> tasks) {
         this.tasks = tasks;
         notifyDataSetChanged();
     }
@@ -63,6 +65,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     public int getItemCount() {
         return tasks.size();
     }
+
 
     /**
      * Listener for deleting tasks
@@ -123,7 +126,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
                 public void onClick(View view) {
                     final Object tag = view.getTag();
                     if (tag instanceof Task) {
-                        //TaskViewHolder.this.deleteTaskListener.onDeleteTask((Task) tag);
+
                     }
                 }
             });

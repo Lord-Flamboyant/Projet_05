@@ -15,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,7 +27,6 @@ import com.cleanup.todoc.injection.Injection;
 import com.cleanup.todoc.injection.ViewModelFactory;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
-import com.cleanup.todoc.viewmodel.TaskViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,11 +41,11 @@ import java.util.List;
  */
 public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
 
-    //----- For Data -----//
-    private TaskViewModel taskViewModel;
-
     //----- test -----//
 
+    private LiveData<List<Task>> mTasks;
+    //----- For Data -----//
+    private TaskViewModel taskViewModel;
 
 
     /**
@@ -52,16 +53,17 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      */
     private final Project[] allProjects = Project.getAllProjects();
 
+
     /**
      * List of all current tasks of the application
      */
     @NonNull
-    private final ArrayList<Task> tasks = new ArrayList<>();
+    private ArrayList<Task> tasks = new ArrayList<>();
 
     /**
      * The adapter which handles the list of tasks
      */
-    private final TasksAdapter adapter = new TasksAdapter(tasks);
+    private TasksAdapter adapter = new TasksAdapter(tasks);
 
     /**
      * The sort method to be used to display tasks
@@ -90,17 +92,11 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     /**
      * The RecyclerView which displays the list of tasks
      */
-    // Suppress warning is safe because variable is initialized in onCreate
-    @SuppressWarnings("NullableProblems")
-    @NonNull
     private RecyclerView listTasks;
 
     /**
      * The TextView displaying the empty state
      */
-    // Suppress warning is safe because variable is initialized in onCreate
-    @SuppressWarnings("NullableProblems")
-    @NonNull
     private TextView lblNoTasks;
 
     @Override
@@ -108,18 +104,24 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
+        listTasks = findViewById(R.id.list_tasks);
+        lblNoTasks = findViewById(R.id.lbl_no_task);
 
 
         //----- Test Zone -----//
         configureViewModel();
-        getItems();
-
-        listTasks = findViewById(R.id.list_tasks);
-        lblNoTasks = findViewById(R.id.lbl_no_task);
 
         listTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         listTasks.setAdapter(adapter);
+
+
+        taskViewModel.getAllTasks().observe(this, new Observer<List<Task>>() {
+            @Override
+            public void onChanged(List<Task> tasks) {
+                adapter.updateTasks(tasks);
+            }
+        });
+
 
 
         findViewById(R.id.fab_add_task).setOnClickListener(new View.OnClickListener() {
@@ -157,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
     @Override
     public void onDeleteTask(Task task) {
-        taskViewModel.deleteItem(task.projectId);
+        deleteTask(task);
         updateTasks();
     }
 
@@ -237,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * Updates the list of tasks in the UI
      */
     private void updateTasks() {
-        if(tasks.size() == 0 ){
+        if( tasks.size() == 0 ){
             lblNoTasks.setVisibility(View.VISIBLE);
             listTasks.setVisibility(View.GONE);
         } else {
@@ -342,36 +344,26 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         NONE
     }
 
-    //----- Configuring ViewModel -----//
+    //----- Configure ViewModel -----//
     private void configureViewModel(){
         ViewModelFactory mViewModelFactory = Injection.provideViewModelFactory(this);
-        this.taskViewModel = new ViewModelProvider(this,mViewModelFactory).get(TaskViewModel.class);
+        taskViewModel = new ViewModelProvider(this,mViewModelFactory).get(TaskViewModel.class);
+
     }
 
 
     //-----test-----//
 
-    private void getItems(){
-        this.taskViewModel.getTasks().observe(this, this::updateItemsList);
+    private void deleteTask(Task task) {
+        taskViewModel.deleteTask(task.id);
     }
 
-    private void updateTaskList(List<Task> task) {
-        this.adapter.updateTasks(tasks);
-    }
-    // ---
-
-    private void deleteTask(long id) {
-        taskViewModel.deleteItem(id);
-    }
-
-    private void getTasks(){
-        this.taskViewModel.getTasks().observe(this, this::updateTaskList);
+    private void getTask(long id) {
+        taskViewModel.getTask(id);
     }
 
     private void updateTask(Task task) {
         taskViewModel.updateItem(task);
     }
-    private void updateItemsList(List<Task> tasks){
-        this.adapter.updateTasks(tasks);
-    }
+
 }
