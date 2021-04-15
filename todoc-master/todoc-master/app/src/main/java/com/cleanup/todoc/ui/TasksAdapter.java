@@ -10,11 +10,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Delete;
 
 import com.cleanup.todoc.R;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,12 +29,13 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
      * The list of tasks the adapter deals with
      */
     @NonNull
-    private List<Task> tasks;    /**
+    private List<Task> tasks;
+
+    /**
      * The listener for when a task needs to be deleted
      */
     @NonNull
     private final DeleteTaskListener deleteTaskListener;
-
 
     /**
      * Instantiates a new TasksAdapter.

@@ -20,4 +20,8 @@ public class ProjectRepository {
         return this.projectDao.getProject(id);
     }
 
+    public LiveData<List<Project>> getAllProjects() {
+        return projectDao.getAllProjects();
+    }
+
 }
