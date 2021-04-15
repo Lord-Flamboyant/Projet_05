@@ -28,15 +28,23 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     /**
      * The list of tasks the adapter deals with
      */
+    @NonNull
     private List<Task> tasks;
+
+    /**
+     * The listener for when a task needs to be deleted
+     */
+    @NonNull
+    private final DeleteTaskListener deleteTaskListener;
 
     /**
      * Instantiates a new TasksAdapter.
      *
      * @param tasks the list of tasks the adapter deals with to set
      */
-    TasksAdapter(List<Task> tasks) {
+    TasksAdapter(@NonNull final List<Task> tasks, @NonNull final DeleteTaskListener deleteTaskListener) {
         this.tasks = tasks;
+        this.deleteTaskListener = deleteTaskListener;
     }
 
     /**
@@ -44,20 +52,20 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
      *
      * @param tasks the list of tasks the adapter deals with to set
      */
-    void updateTasks(final List<Task> tasks) {
+    void updateTasks(@NonNull final List<Task> tasks) {
         this.tasks = tasks;
         notifyDataSetChanged();
     }
 
     @NonNull
     @Override
-    public TaskViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_task, viewGroup, false);
-        return new TaskViewHolder(view);
+        return new TaskViewHolder(view, deleteTaskListener);
     }
 
     @Override
-    public void onBindViewHolder(TaskViewHolder taskViewHolder, int position) {
+    public void onBindViewHolder(@NonNull TaskViewHolder taskViewHolder, int position) {
         taskViewHolder.bind(tasks.get(position));
     }
 
@@ -65,7 +73,6 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     public int getItemCount() {
         return tasks.size();
     }
-
 
     /**
      * Listener for deleting tasks
@@ -108,14 +115,19 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         /**
          * The listener for when a task needs to be deleted
          */
+        private final DeleteTaskListener deleteTaskListener;
 
         /**
          * Instantiates a new TaskViewHolder.
-         *  @param itemView the view of the task item
          *
+         * @param itemView the view of the task item
+         * @param deleteTaskListener the listener for when a task needs to be deleted to set
          */
-        TaskViewHolder(@NonNull View itemView) {
+        TaskViewHolder(@NonNull View itemView, @NonNull DeleteTaskListener deleteTaskListener) {
             super(itemView);
+
+            this.deleteTaskListener = deleteTaskListener;
+
             imgProject = itemView.findViewById(R.id.img_project);
             lblTaskName = itemView.findViewById(R.id.lbl_task_name);
             lblProjectName = itemView.findViewById(R.id.lbl_project_name);
@@ -126,7 +138,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
                 public void onClick(View view) {
                     final Object tag = view.getTag();
                     if (tag instanceof Task) {
-
+                        TaskViewHolder.this.deleteTaskListener.onDeleteTask((Task) tag);
                     }
                 }
             });

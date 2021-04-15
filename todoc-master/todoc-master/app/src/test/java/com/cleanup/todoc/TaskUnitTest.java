@@ -18,6 +18,8 @@ import static org.junit.Assert.assertSame;
  * @author Gaëtan HERFRAY
  */
 public class TaskUnitTest {
+
+    //----- verify project -----//
     @Test
     public void test_projects() {
         final Task task1 = new Task(1, 1, "task 1", new Date().getTime());
@@ -31,6 +33,7 @@ public class TaskUnitTest {
         assertNull(task4.getProject());
     }
 
+    //----- test for filter A to Z -----//
     @Test
     public void test_az_comparator() {
         final Task task1 = new Task(1, 1, "aaa", 123);
@@ -48,6 +51,7 @@ public class TaskUnitTest {
         assertSame(tasks.get(2), task2);
     }
 
+    //----- test for filter Z to A -----//
     @Test
     public void test_za_comparator() {
         final Task task1 = new Task(1, 1, "aaa", 123);
@@ -65,6 +69,7 @@ public class TaskUnitTest {
         assertSame(tasks.get(2), task1);
     }
 
+    //----- test for filter most recent to most oldest -----//
     @Test
     public void test_recent_comparator() {
         final Task task1 = new Task(1, 1, "aaa", 123);
@@ -82,6 +87,7 @@ public class TaskUnitTest {
         assertSame(tasks.get(2), task1);
     }
 
+    //----- test for filter most oldest to most recent -----//
     @Test
     public void test_old_comparator() {
         final Task task1 = new Task(1, 1, "aaa", 123);
@@ -98,4 +104,12 @@ public class TaskUnitTest {
         assertSame(tasks.get(1), task2);
         assertSame(tasks.get(2), task3);
     }
+
+    //----- test for add task -----//
+    //TODO: make test
+
+
+
+    //----- test for delete a task -----//
+    //TODO: make test
 }

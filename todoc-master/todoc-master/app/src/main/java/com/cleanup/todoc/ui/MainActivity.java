@@ -41,29 +41,27 @@ import java.util.List;
  */
 public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
 
-    //----- test -----//
 
-    private LiveData<List<Task>> mTasks;
-    //----- For Data -----//
+    //----- far Data -----//
     private TaskViewModel taskViewModel;
 
 
     /**
      * List of all projects available in the application
      */
-    private final Project[] allProjects = Project.getAllProjects();
+    private Project[] allProjects;
 
 
     /**
      * List of all current tasks of the application
      */
     @NonNull
-    private ArrayList<Task> tasks = new ArrayList<>();
+    private ArrayList<Task> tasks;
 
     /**
      * The adapter which handles the list of tasks
      */
-    private TasksAdapter adapter = new TasksAdapter(tasks);
+    private TasksAdapter adapter;
 
     /**
      * The sort method to be used to display tasks
@@ -107,22 +105,11 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         listTasks = findViewById(R.id.list_tasks);
         lblNoTasks = findViewById(R.id.lbl_no_task);
 
-
-        //----- Test Zone -----//
+        tasks = new ArrayList<>();
+        allProjects = Project.getAllProjects();
         configureViewModel();
-
-        listTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        listTasks.setAdapter(adapter);
-
-
-        taskViewModel.getAllTasks().observe(this, new Observer<List<Task>>() {
-            @Override
-            public void onChanged(List<Task> tasks) {
-                adapter.updateTasks(tasks);
-            }
-        });
-
-
+        configureRecyclerView();
+        getAllTasks();
 
         findViewById(R.id.fab_add_task).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             }
         });
     }
-
+    //----- Menu -----//
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.actions, menu);
@@ -152,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             sortMethod = SortMethod.RECENT_FIRST;
         }
 
-        updateTasks();
+        updateTasks(tasks);
 
         return super.onOptionsItemSelected(item);
     }
@@ -160,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @Override
     public void onDeleteTask(Task task) {
         deleteTask(task);
-        updateTasks();
+        updateTasks(tasks);
     }
 
     /**
@@ -186,12 +173,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             }
             // If both project and name of the task have been set
             else if (taskProject != null) {
-                // TODO: Replace this by id of persisted task
-                long id = (long) (Math.random() * 50000);
-
 
                 Task task = new Task(
-                        id,
                         taskProject.getId(),
                         taskName,
                         new Date().getTime()
@@ -226,25 +209,17 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     }
 
     /**
-     * Adds the given task to the list of created tasks.
-     *
-     * @param task the task to be added to the list
-     */
-    private void addTask(Task task) {
-        taskViewModel.createTask(task);
-        updateTasks();
-    }
-
-    /**
      * Updates the list of tasks in the UI
      */
-    private void updateTasks() {
-        if( tasks.size() == 0 ){
+    private void updateTasks(List<Task> tasks) {
+        this.tasks = (ArrayList<Task>) tasks;
+        if(tasks.size() == 0){
             lblNoTasks.setVisibility(View.VISIBLE);
             listTasks.setVisibility(View.GONE);
         } else {
             lblNoTasks.setVisibility(View.GONE);
             listTasks.setVisibility(View.VISIBLE);
+
             switch (sortMethod) {
                 case ALPHABETICAL:
                     Collections.sort(tasks, new Task.TaskAZComparator());
@@ -348,22 +323,27 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     private void configureViewModel(){
         ViewModelFactory mViewModelFactory = Injection.provideViewModelFactory(this);
         taskViewModel = new ViewModelProvider(this,mViewModelFactory).get(TaskViewModel.class);
-
     }
 
+    //----- Configure RecyclerWiew -----//
+    private void configureRecyclerView() {
+        adapter = new TasksAdapter(tasks, this);
+        listTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        listTasks.setAdapter(adapter);
+    }
 
-    //-----test-----//
+    private void getAllTasks() {
+        taskViewModel.getAllTasks().observe(this, this::updateTasks);
+    }
+
+    private void addTask(Task task) {
+        taskViewModel.createTask(task);
+        updateTasks(tasks);
+    }
 
     private void deleteTask(Task task) {
         taskViewModel.deleteTask(task.id);
     }
 
-    private void getTask(long id) {
-        taskViewModel.getTask(id);
-    }
-
-    private void updateTask(Task task) {
-        taskViewModel.updateItem(task);
-    }
 
 }
