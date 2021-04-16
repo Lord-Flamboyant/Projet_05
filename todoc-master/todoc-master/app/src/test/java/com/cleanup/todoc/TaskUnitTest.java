@@ -19,7 +19,7 @@ import static org.junit.Assert.assertSame;
  */
 public class TaskUnitTest {
 
-    //----- verify project -----//
+    //----- test project -----//
     @Test
     public void test_projects() {
         final Task task1 = new Task(1, 1, "task 1", new Date().getTime());
@@ -104,12 +104,4 @@ public class TaskUnitTest {
         assertSame(tasks.get(1), task2);
         assertSame(tasks.get(2), task3);
     }
-
-    //----- test for add task -----//
-    //TODO: make test
-
-
-
-    //----- test for delete a task -----//
-    //TODO: make test
 }

@@ -42,9 +42,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
 
 
-    //----- far Data -----//
+    //----- for Data -----//
     private TaskViewModel taskViewModel;
-
 
     /**
      * List of all projects available in the application
@@ -118,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             }
         });
     }
+
     //----- Menu -----//
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -331,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         listTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         listTasks.setAdapter(adapter);
     }
-
+    //----- Methode task -----//
     private void getAllTasks() {
         taskViewModel.getAllTasks().observe(this, this::updateTasks);
     }

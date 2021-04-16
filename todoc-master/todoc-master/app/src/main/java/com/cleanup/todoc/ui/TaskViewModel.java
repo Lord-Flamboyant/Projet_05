@@ -27,18 +27,10 @@ public class TaskViewModel extends ViewModel {
         this.executor = executor;
     }
 
-    public void init(long id) {
-        if (this.currentProject != null) {
-            return;
-        }
-        currentProject = projectRepository.getProject(id);
-    }
-
     //----- For Project -----//
     public LiveData<Project> getProject(long id) {
         return this.currentProject;
     }
-
     public LiveData<List<Project>> getAllProjects() {
         return projectRepository.getAllProjects();
     }
@@ -47,23 +39,25 @@ public class TaskViewModel extends ViewModel {
     public LiveData<List<Task>> getAllTasks() {
         return taskRepository.getAllTasks();
     }
-
     public LiveData<Task> getTask(long id) {
         return taskRepository.getTask(id);
     }
 
+    //----- create task -----//
     public void createTask(Task task) {
         executor.execute(() -> {
             taskRepository.createTask(task);
         });
     }
 
+    //----- delete task -----//
     public void deleteTask(long id) {
         executor.execute(() -> {
             taskRepository.deleteTask(id);
         });
     }
 
+    //----- update task -----//
     public void updateItem(Task task) {
         executor.execute(() -> {
             taskRepository.updateTask(task);
