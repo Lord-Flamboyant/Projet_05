@@ -9,11 +9,13 @@ import java.util.List;
 
 public class TaskRepository {
 
+    //----- data -----//
     private final TaskDao taskDao;
 
     public TaskRepository(TaskDao taskDao) {
         this.taskDao = taskDao;
     }
+
 
     //----- GetAll  -----//
     public LiveData<List<Task>> getAllTasks() {

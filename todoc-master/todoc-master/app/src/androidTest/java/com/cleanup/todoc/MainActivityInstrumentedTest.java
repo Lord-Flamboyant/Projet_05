@@ -1,13 +1,21 @@
 package com.cleanup.todoc;
 
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import android.view.View;
 import android.widget.TextView;
 
+import com.cleanup.todoc.database.TaskDatabase;
 import com.cleanup.todoc.ui.MainActivity;
 
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,14 +38,38 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(AndroidJUnit4.class)
 public class MainActivityInstrumentedTest {
+
+    //----- for data -----//
+    TaskDatabase database;
+
     @Rule
     public ActivityTestRule<MainActivity> rule = new ActivityTestRule<>(MainActivity.class);
+
+    @Before
+    public void initDb() throws Exception
+    {
+        this.database = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(), TaskDatabase.class)
+                .allowMainThreadQueries().build();
+    }
+
+    @After
+    public void closeDb() throws Exception
+    {
+        this.database.close();
+    }
 
     @Test
     public void addAndRemoveTask() {
         MainActivity activity = rule.getActivity();
         TextView lblNoTask = activity.findViewById(R.id.lbl_no_task);
         RecyclerView listTasks = activity.findViewById(R.id.list_tasks);
+
+        //----- delete task -----//
+        RecyclerView listTasks1 = activity.findViewById(R.id.list_tasks);
+        int countList = listTasks1.getAdapter().getItemCount();
+        for (int i = 0 ; i < countList; i++){
+            onView(withIndex(withId(R.id.img_delete), 0)).perform(click());
+        }
 
         onView(withId(R.id.fab_add_task)).perform(click());
         onView(withId(R.id.txt_task_name)).perform(replaceText("Tâche example"));
@@ -61,6 +93,14 @@ public class MainActivityInstrumentedTest {
     @Test
     public void sortTasks() {
         MainActivity activity = rule.getActivity();
+
+
+        //----- delete task -----//
+        RecyclerView listTasks1 = activity.findViewById(R.id.list_tasks);
+        int countList = listTasks1.getAdapter().getItemCount();
+        for (int i = 0 ; i < countList; i++){
+            onView(withIndex(withId(R.id.img_delete), 0)).perform(click());
+        }
 
         onView(withId(R.id.fab_add_task)).perform(click());
         onView(withId(R.id.txt_task_name)).perform(replaceText("aaa Tâche example"));
@@ -118,5 +158,34 @@ public class MainActivityInstrumentedTest {
                 .check(matches(withText("zzz Tâche example")));
         onView(withRecyclerView(R.id.list_tasks).atPositionOnView(2, R.id.lbl_task_name))
                 .check(matches(withText("aaa Tâche example")));
+
+        //----- delete task -----//
+        RecyclerView listTasks2 = activity.findViewById(R.id.list_tasks);
+        int countList2 = listTasks2.getAdapter().getItemCount();
+        for (int i = 0 ; i < countList2; i++){
+            onView(withIndex(withId(R.id.img_delete), 0)).perform(click());
+        }
+
     }
+
+
+    public static Matcher<View> withIndex(final Matcher<View> matcher, final int index) {
+        return new TypeSafeMatcher<View>() {
+            int currentIndex = 0;
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with index: ");
+                description.appendValue(index);
+                matcher.describeTo(description);
+            }
+
+            @Override
+            public boolean matchesSafely(View view) {
+                return matcher.matches(view) && currentIndex++ == index;
+            }
+        };
+    }
+
+
 }

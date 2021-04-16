@@ -9,7 +9,9 @@ import java.util.List;
 
 public class ProjectRepository {
 
+    //----- data -----//
     private final ProjectDao projectDao;
+
 
     public ProjectRepository(ProjectDao projectDao) {
         this.projectDao = projectDao;
@@ -20,6 +22,7 @@ public class ProjectRepository {
         return this.projectDao.getProject(id);
     }
 
+    //-----Get all projects  -----//
     public LiveData<List<Project>> getAllProjects() {
         return projectDao.getAllProjects();
     }
