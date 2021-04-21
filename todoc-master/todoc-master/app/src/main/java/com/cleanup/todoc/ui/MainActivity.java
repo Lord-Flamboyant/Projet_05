@@ -48,13 +48,11 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     /**
      * List of all projects available in the application
      */
-    private Project[] allProjects;
-
+    private ArrayList<Project> allProjects;
 
     /**
      * List of all current tasks of the application
      */
-    @NonNull
     private ArrayList<Task> tasks;
 
     /**
@@ -104,11 +102,15 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         listTasks = findViewById(R.id.list_tasks);
         lblNoTasks = findViewById(R.id.lbl_no_task);
 
+        allProjects = new ArrayList<>();
         tasks = new ArrayList<>();
-        allProjects = Project.getAllProjects();
+
+
         configureViewModel();
         configureRecyclerView();
+
         getAllTasks();
+        getAllProjects();
 
         findViewById(R.id.fab_add_task).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -325,9 +327,9 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         taskViewModel = new ViewModelProvider(this,mViewModelFactory).get(TaskViewModel.class);
     }
 
-    //----- Configure RecyclerWiew -----//
+    //----- Configure Recyclerview -----//
     private void configureRecyclerView() {
-        adapter = new TasksAdapter(tasks, this);
+        adapter = new TasksAdapter(tasks, allProjects,this);
         listTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         listTasks.setAdapter(adapter);
     }
@@ -345,5 +347,15 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         taskViewModel.deleteTask(task.id);
     }
 
+    //----- Update Projects -----//
+    private void updateProjects(List<Project> projects) {
+        this.allProjects = (ArrayList<Project>) projects;
+        adapter.updateProject(projects);
+    }
+
+    //----- get All projects -----//
+    private void getAllProjects() {
+        taskViewModel.getAllProjects().observe(this, this::updateProjects);
+    }
 
 }

@@ -30,10 +30,11 @@ public class TaskUnitTest {
         assertEquals("Projet Tartampion", task1.getProject().getName());
         assertEquals("Projet Lucidia", task2.getProject().getName());
         assertEquals("Projet Circus", task3.getProject().getName());
+        //----- verify for project 4 is not created -----//
         assertNull(task4.getProject());
     }
 
-    //----- test for filter A to Z -----//
+    //----- test for filter by project A to Z -----//
     @Test
     public void test_az_comparator() {
         final Task task1 = new Task(1, 1, "aaa", 123);
@@ -46,12 +47,12 @@ public class TaskUnitTest {
         tasks.add(task3);
         Collections.sort(tasks, new Task.TaskAZComparator());
 
-        assertSame(tasks.get(0), task1);
-        assertSame(tasks.get(1), task3);
-        assertSame(tasks.get(2), task2);
+        assertSame(tasks.get(2), task1);
+        assertSame(tasks.get(0), task3);
+        assertSame(tasks.get(1), task2);
     }
 
-    //----- test for filter Z to A -----//
+    //----- test for filter by project Z to A -----//
     @Test
     public void test_za_comparator() {
         final Task task1 = new Task(1, 1, "aaa", 123);
@@ -64,9 +65,9 @@ public class TaskUnitTest {
         tasks.add(task3);
         Collections.sort(tasks, new Task.TaskZAComparator());
 
-        assertSame(tasks.get(0), task2);
-        assertSame(tasks.get(1), task3);
-        assertSame(tasks.get(2), task1);
+        assertSame(tasks.get(1), task2);
+        assertSame(tasks.get(2), task3);
+        assertSame(tasks.get(0), task1);
     }
 
     //----- test for filter most recent to most oldest -----//

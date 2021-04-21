@@ -1,6 +1,8 @@
 package com.cleanup.todoc.model;
 
 
+import android.print.PrintJob;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
@@ -29,14 +31,12 @@ public class Task {
     /**
      * The unique identifier of the project associated to the task
      */
+    @ColumnInfo(name = "projectId", index = true)
     public long projectId;
 
     /**
      * The name of the task
      */
-    // Suppress warning because setName is called in constructor
-    @SuppressWarnings("NullableProblems")
-    @NonNull
     public String name;
 
     /**
@@ -62,7 +62,7 @@ public class Task {
      * @param creationTimestamp the timestamp when the task has been created to set
      */
 
-    public Task(long projectId, @NonNull String name, long creationTimestamp) {
+    public Task(long projectId, String name, long creationTimestamp) {
         this.setProjectId(projectId);
         this.setName(name);
         this.setCreationTimestamp(creationTimestamp);
@@ -134,22 +134,22 @@ public class Task {
     }
 
     /**
-     * Comparator to sort task from A to Z
+     * Comparator to sort task by project A to Z
      */
     public static class TaskAZComparator implements Comparator<Task> {
         @Override
         public int compare(Task left, Task right) {
-            return left.name.compareTo(right.name);
+            return left.getProject().getName().compareTo(right.getProject().getName());
         }
     }
 
     /**
-     * Comparator to sort task from Z to A
+     * Comparator to sort task by project  Z to A
      */
     public static class TaskZAComparator implements Comparator<Task> {
         @Override
         public int compare(Task left, Task right) {
-            return right.name.compareTo(left.name);
+            return right.getProject().getName().compareTo(left.getProject().getName());
         }
     }
 

@@ -7,6 +7,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.ArrayList;
+
 /**
  * <p>Models for project in which tasks are included.</p>
  *
@@ -20,6 +22,7 @@ public class Project {
      * The unique identifier of the project
      */
     @PrimaryKey
+    @ColumnInfo(name = "id")
     public long id;
 
     /**
@@ -53,13 +56,17 @@ public class Project {
      * @return all the projects of the application
      */
 
+
+
     public static Project[] getAllProjects() {
         return new Project[]{
                 new Project(1L, "Projet Tartampion", 0xFFEADAD1),
                 new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
                 new Project(3L, "Projet Circus", 0xFFA3CED2),
+
         };
     }
+
 
     /**
      * Returns the project with the given unique identifier, or null if no project with that
