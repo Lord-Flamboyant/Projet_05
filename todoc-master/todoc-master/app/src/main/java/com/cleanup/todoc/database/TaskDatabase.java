@@ -27,6 +27,7 @@ public abstract class TaskDatabase extends RoomDatabase {
 
     //----- INSTANCE -----//
     public static TaskDatabase getInstance(Context context) {
+        context.deleteDatabase("Todocdatabase.db");
         if (INSTANCE == null) {
             synchronized (TaskDatabase.class) {
                 if (INSTANCE == null) {
@@ -60,17 +61,17 @@ public abstract class TaskDatabase extends RoomDatabase {
 
                 //----- project -----//
                 ContentValues contentValues1 = new ContentValues();
-                contentValues1.put("id", 1L);
+                contentValues1.put("id", 1);
                 contentValues1.put("name","Projet Tartampion" );
                 contentValues1.put("color",0xFFEADAD1);
 
                 ContentValues contentValues2 = new ContentValues();
-                contentValues2.put("id", 2L);
+                contentValues2.put("id", 2);
                 contentValues2.put("name","Projet Lucidia" );
                 contentValues2.put("color",0xFFB4CDBA);
 
                 ContentValues contentValues3 = new ContentValues();
-                contentValues3.put("id", 3L);
+                contentValues3.put("id", 3);
                 contentValues3.put("name","Projet Circu" );
                 contentValues3.put("color",0xFFA3CED2);
 

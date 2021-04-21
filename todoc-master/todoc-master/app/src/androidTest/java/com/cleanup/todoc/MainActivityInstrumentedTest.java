@@ -3,9 +3,13 @@ package com.cleanup.todoc;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
+import androidx.test.espresso.ViewInteraction;
+import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.TextView;
 
 import com.cleanup.todoc.database.TaskDatabase;
@@ -20,13 +24,20 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.replaceText;
+
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static com.cleanup.todoc.TestUtils.withRecyclerView;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -91,73 +102,81 @@ public class MainActivityInstrumentedTest {
     }
 
     @Test
-    public void sortTasks() {
+    public void sortTasksByProject() {
         MainActivity activity = rule.getActivity();
 
-
-        //----- delete task -----//
-        RecyclerView listTasks1 = activity.findViewById(R.id.list_tasks);
-        int countList = listTasks1.getAdapter().getItemCount();
+        RecyclerView listTasks = activity.findViewById(R.id.list_tasks);
+        int countList = listTasks.getAdapter().getItemCount();
         for (int i = 0 ; i < countList; i++){
             onView(withIndex(withId(R.id.img_delete), 0)).perform(click());
         }
 
+
         onView(withId(R.id.fab_add_task)).perform(click());
-        onView(withId(R.id.txt_task_name)).perform(replaceText("aaa Tâche example"));
+        onView(withId(R.id.txt_task_name)).perform(replaceText("wash the desk"));
+        ViewInteraction appCompatSpinner1 = onView(allOf(withId(R.id.project_spinner),
+                childAtPosition(allOf(withId(R.id.dialog_add),
+                        childAtPosition(withId(R.id.custom), 0)), 1),
+                isDisplayed()));
+        appCompatSpinner1.perform(click());
+        onData(anything()).inRoot(RootMatchers.isPlatformPopup()).atPosition(2).perform(click());
         onView(withId(android.R.id.button1)).perform(click());
         onView(withId(R.id.fab_add_task)).perform(click());
-        onView(withId(R.id.txt_task_name)).perform(replaceText("zzz Tâche example"));
+        onView(withId(R.id.txt_task_name)).perform(replaceText("open windows"));
+        ViewInteraction appCompatSpinner2 = onView(allOf(withId(R.id.project_spinner),
+                childAtPosition(allOf(withId(R.id.dialog_add),
+                        childAtPosition(withId(R.id.custom), 0)), 1),
+                isDisplayed()));
+        appCompatSpinner2.perform(click());
+        onData(anything()).inRoot(RootMatchers.isPlatformPopup()).atPosition(1).perform(click());
         onView(withId(android.R.id.button1)).perform(click());
         onView(withId(R.id.fab_add_task)).perform(click());
-        onView(withId(R.id.txt_task_name)).perform(replaceText("hhh Tâche example"));
+        onView(withId(R.id.txt_task_name)).perform(replaceText("empty the trash"));
+        ViewInteraction appCompatSpinner3 = onView(allOf(withId(R.id.project_spinner),
+                childAtPosition(allOf(withId(R.id.dialog_add),
+                        childAtPosition(withId(R.id.custom), 0)), 1),
+                isDisplayed()));
+        appCompatSpinner3.perform(click());
+        onData(anything()).inRoot(RootMatchers.isPlatformPopup()).atPosition(0).perform(click());
         onView(withId(android.R.id.button1)).perform(click());
 
         onView(withRecyclerView(R.id.list_tasks).atPositionOnView(0, R.id.lbl_task_name))
-                .check(matches(withText("aaa Tâche example")));
+                .check(matches(withText("wash the desk")));
         onView(withRecyclerView(R.id.list_tasks).atPositionOnView(1, R.id.lbl_task_name))
-                .check(matches(withText("zzz Tâche example")));
+                .check(matches(withText("open windows")));
         onView(withRecyclerView(R.id.list_tasks).atPositionOnView(2, R.id.lbl_task_name))
-                .check(matches(withText("hhh Tâche example")));
+                .check(matches(withText("empty the trash")));
 
         // Sort alphabetical
         onView(withId(R.id.action_filter)).perform(click());
         onView(withText(R.string.sort_alphabetical)).perform(click());
         onView(withRecyclerView(R.id.list_tasks).atPositionOnView(0, R.id.lbl_task_name))
-                .check(matches(withText("aaa Tâche example")));
+                .check(matches(withText("wash the desk")));
         onView(withRecyclerView(R.id.list_tasks).atPositionOnView(1, R.id.lbl_task_name))
-                .check(matches(withText("hhh Tâche example")));
+                .check(matches(withText("open windows")));
         onView(withRecyclerView(R.id.list_tasks).atPositionOnView(2, R.id.lbl_task_name))
-                .check(matches(withText("zzz Tâche example")));
+                .check(matches(withText("empty the trash")));
 
         // Sort alphabetical inverted
         onView(withId(R.id.action_filter)).perform(click());
         onView(withText(R.string.sort_alphabetical_invert)).perform(click());
         onView(withRecyclerView(R.id.list_tasks).atPositionOnView(0, R.id.lbl_task_name))
-                .check(matches(withText("zzz Tâche example")));
+                .check(matches(withText("empty the trash")));
         onView(withRecyclerView(R.id.list_tasks).atPositionOnView(1, R.id.lbl_task_name))
-                .check(matches(withText("hhh Tâche example")));
+                .check(matches(withText("open windows")));
         onView(withRecyclerView(R.id.list_tasks).atPositionOnView(2, R.id.lbl_task_name))
-                .check(matches(withText("aaa Tâche example")));
+                .check(matches(withText("wash the desk")));
 
         // Sort old first
         onView(withId(R.id.action_filter)).perform(click());
         onView(withText(R.string.sort_oldest_first)).perform(click());
         onView(withRecyclerView(R.id.list_tasks).atPositionOnView(0, R.id.lbl_task_name))
-                .check(matches(withText("aaa Tâche example")));
+                .check(matches(withText("wash the desk")));
         onView(withRecyclerView(R.id.list_tasks).atPositionOnView(1, R.id.lbl_task_name))
-                .check(matches(withText("zzz Tâche example")));
+                .check(matches(withText("open windows")));
         onView(withRecyclerView(R.id.list_tasks).atPositionOnView(2, R.id.lbl_task_name))
-                .check(matches(withText("hhh Tâche example")));
+                .check(matches(withText("empty the trash")));
 
-        // Sort recent first
-        onView(withId(R.id.action_filter)).perform(click());
-        onView(withText(R.string.sort_recent_first)).perform(click());
-        onView(withRecyclerView(R.id.list_tasks).atPositionOnView(0, R.id.lbl_task_name))
-                .check(matches(withText("hhh Tâche example")));
-        onView(withRecyclerView(R.id.list_tasks).atPositionOnView(1, R.id.lbl_task_name))
-                .check(matches(withText("zzz Tâche example")));
-        onView(withRecyclerView(R.id.list_tasks).atPositionOnView(2, R.id.lbl_task_name))
-                .check(matches(withText("aaa Tâche example")));
 
         //----- delete task -----//
         RecyclerView listTasks2 = activity.findViewById(R.id.list_tasks);
@@ -168,6 +187,7 @@ public class MainActivityInstrumentedTest {
 
     }
 
+    //----- Option -----//
 
     public static Matcher<View> withIndex(final Matcher<View> matcher, final int index) {
         return new TypeSafeMatcher<View>() {
@@ -183,6 +203,25 @@ public class MainActivityInstrumentedTest {
             @Override
             public boolean matchesSafely(View view) {
                 return matcher.matches(view) && currentIndex++ == index;
+            }
+        };
+    }
+
+    private static Matcher<View> childAtPosition(
+            final Matcher<View> parentMatcher, final int position) {
+
+        return new TypeSafeMatcher<View>() {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Child at position " + position + " in parent ");
+                parentMatcher.describeTo(description);
+            }
+
+            @Override
+            public boolean matchesSafely(View view) {
+                ViewParent parent = view.getParent();
+                return parent instanceof ViewGroup && parentMatcher.matches(parent)
+                        && view.equals(((ViewGroup) parent).getChildAt(position));
             }
         };
     }
