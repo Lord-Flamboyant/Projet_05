@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            storePassword 'benjaminandroid'
+            keyPassword 'benjaminandroid'
+            keyAlias 'benjaminandroid'
+            storeFile file('C:\\Users\\benja\\Desktop\\openclassrooms\\Projet_05.1\\Projet_05\\todoc-master\\todoc-master\\build.gradle')
+        }
+    }
     compileSdkVersion 30
     defaultConfig {
         applicationId "com.cleanup.todoc"

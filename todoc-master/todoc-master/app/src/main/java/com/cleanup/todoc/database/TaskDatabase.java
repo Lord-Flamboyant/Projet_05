@@ -27,7 +27,6 @@ public abstract class TaskDatabase extends RoomDatabase {
 
     //----- INSTANCE -----//
     public static TaskDatabase getInstance(Context context) {
-        context.deleteDatabase("Todocdatabase.db");
         if (INSTANCE == null) {
             synchronized (TaskDatabase.class) {
                 if (INSTANCE == null) {
