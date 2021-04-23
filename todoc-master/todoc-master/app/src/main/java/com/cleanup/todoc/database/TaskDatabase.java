@@ -74,9 +74,9 @@ public abstract class TaskDatabase extends RoomDatabase {
                 contentValues3.put("name","Projet Circu" );
                 contentValues3.put("color",0xFFA3CED2);
 
-                db.insert("Project", OnConflictStrategy.IGNORE, contentValues1);
-                db.insert("Project", OnConflictStrategy.IGNORE, contentValues2);
-                db.insert("Project", OnConflictStrategy.IGNORE, contentValues3);
+                db.insert("Project", OnConflictStrategy.REPLACE, contentValues1);
+                db.insert("Project", OnConflictStrategy.REPLACE, contentValues2);
+                db.insert("Project", OnConflictStrategy.REPLACE, contentValues3);
             }
         };
     }
