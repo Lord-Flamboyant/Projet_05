@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep class com.cleanup.todoc.model.Project** { *; }
+-keep class com.cleanup.todoc.database.dao.ProjectDao** { *; }
+-keep class com.cleanup.todoc.database.dao.TaskDao** { *; }
