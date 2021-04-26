@@ -41,7 +41,6 @@ import java.util.List;
  */
 public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
 
-
     //----- for Data -----//
     private TaskViewModel taskViewModel;
 
